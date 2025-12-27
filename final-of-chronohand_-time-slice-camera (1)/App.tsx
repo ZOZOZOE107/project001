@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+// Removed explicit MediaPipe imports to avoid ESM syntax errors with global scripts
 import { AppState, Rect, Results, EffectMode, NormalizedLandmarkList } from './types';
 import { isPointingUp, isPinching, isHandClosed, isVictoryHand } from './utils/gestureUtils';
 import InfoOverlay from './components/InfoOverlay';
@@ -332,9 +333,9 @@ const App: React.FC = () => {
     ctx.save();
     ctx.clearRect(0, 0, canvasW, canvasH);
 
-    // ！！！重要修改：移除镜像变换 ！！！
-    // 之前代码：ctx.translate(canvasW, 0); ctx.scale(-1, 1);
-    // 现在：直接绘制，不进行镜像
+    // Apply Mirror Effect for Main Display
+    ctx.translate(canvasW, 0);
+    ctx.scale(-1, 1);
 
     const hands = results.multiHandLandmarks;
     handCountRef.current = hands ? hands.length : 0;
@@ -380,7 +381,7 @@ const App: React.FC = () => {
            const fCtx = frozenCanvasRef.current.getContext('2d');
            if (fCtx) {
              fCtx.save();
-             // Draw raw image without mirroring
+             // Draw raw image without mirroring (it will be drawn on mirrored context later)
              fCtx.drawImage(results.image, offsetX, offsetY, drawW, drawH);
              fCtx.restore();
            }
@@ -697,25 +698,26 @@ const App: React.FC = () => {
           ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
           ctx.fill();
 
-          const valX = p.x.toFixed(2); // 修改：不再翻转X坐标
+          const valX = (canvasW - p.x).toFixed(2); // Fix: show coordinate from screen left (0) to right (W)
           const valY = p.y.toFixed(2);
           
           ctx.save();
           ctx.translate(p.x, p.y);
+          ctx.scale(-1, 1); // Fix: Un-mirror text so it is readable
           
           ctx.fillStyle = 'rgba(200, 200, 200, 0.4)';
           ctx.font = '10px monospace';
           
           const gap = 8;
           
-          ctx.textAlign = isVisualRight ? 'right' : 'left'; 
+          ctx.textAlign = isVisualRight ? 'left' : 'right'; // Flipped alignment logic due to scale
           ctx.textBaseline = isTop ? 'bottom' : 'top';
           ctx.fillText(`x: ${valX}`, 0, isTop ? -gap : gap);
           
-          ctx.rotate(Math.PI / 2);
+          ctx.rotate(-Math.PI / 2); // Flipped rotation direction
           ctx.textAlign = isTop ? 'left' : 'right';
-          ctx.textBaseline = isVisualRight ? 'bottom' : 'top';
-          ctx.fillText(`y: ${valY}`, 0, isVisualRight ? -gap : gap);
+          ctx.textBaseline = isVisualRight ? 'top' : 'bottom';
+          ctx.fillText(`y: ${valY}`, 0, isVisualRight ? gap : -gap);
 
           ctx.restore();
       };

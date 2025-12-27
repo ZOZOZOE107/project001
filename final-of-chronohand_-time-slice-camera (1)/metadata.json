@@ -1,0 +1,7 @@
+{
+  "name": "Final of ChronoHand: Time-Slice Camera",
+  "description": "A TouchDesigner-inspired interactive camera experiment. Use hand gestures to define a time-slice window where part of the screen remains live while the rest freezes.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

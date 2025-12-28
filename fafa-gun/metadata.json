@@ -1,0 +1,7 @@
+{
+  "name": "Gemini AR Rhythm",
+  "description": "A beat-saber style AR game controlled by hand gestures, featuring AI-generated levels powered by Gemini.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

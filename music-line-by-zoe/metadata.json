@@ -1,0 +1,8 @@
+{
+  "name": "music Line by zoe",
+  "description": "An artistic visualization that transforms your webcam feed into a dynamic, waveform-style line art animation based on brightness.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

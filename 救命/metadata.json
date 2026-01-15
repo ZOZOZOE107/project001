@@ -1,7 +1,0 @@
-{
-  "name": "tear - AR",
-  "description": "An augmented reality experience where typed text transforms into typographic tears rolling down your face.",
-  "requestFramePermissions": [
-    "camera"
-  ]
-}
